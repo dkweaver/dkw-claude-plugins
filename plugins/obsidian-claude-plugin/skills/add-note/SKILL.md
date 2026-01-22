@@ -15,6 +15,15 @@ Create a new note in the user's Obsidian vault.
 
 The vault path is stored in: `~/.claude/plugins/obsidian-claude.config`
 
+**IMPORTANT**: First check if config exists:
+```bash
+cat ~/.claude/plugins/obsidian-claude.config
+```
+
+If the file doesn't exist or VAULT_PATH is empty, tell the user:
+"Please run `/obsidian-claude-plugin:setup` first to configure your vault path."
+Then STOP - do not proceed without a valid config.
+
 Read the vault path:
 ```bash
 VAULT_PATH=$(grep VAULT_PATH ~/.claude/plugins/obsidian-claude.config | cut -d= -f2)
