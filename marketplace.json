@@ -1,0 +1,11 @@
+{
+  "name": "dkweaver-obsidian-claude-plugin",
+  "plugins": [
+    {
+      "name": "obsidian-claude-plugin",
+      "source": ".",
+      "description": "Claude Code plugin for managing Obsidian vaults with daily notes and note creation",
+      "version": "1.0.0"
+    }
+  ]
+}
