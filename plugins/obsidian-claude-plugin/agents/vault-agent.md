@@ -4,6 +4,7 @@ description: Specialized agent with access to the Obsidian vault. Use for readin
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
 permissionMode: acceptEdits
+color: "#9b59b6"
 skills:
   - obsidian
 ---
