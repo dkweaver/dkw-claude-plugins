@@ -1,9 +1,9 @@
 ---
 name: vault-agent
 description: Specialized agent with access to the Obsidian vault. Use for reading, searching, and modifying notes in the vault.
-tools: Read, Write, Edit, Glob, Grep
+tools: Read, Write, Edit, Glob, Grep, Bash
 model: sonnet
-permissionMode: default
+permissionMode: acceptEdits
 skills:
   - obsidian
 ---
