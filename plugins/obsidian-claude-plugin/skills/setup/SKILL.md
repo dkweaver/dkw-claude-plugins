@@ -1,7 +1,7 @@
 ---
 name: setup
 description: Configure the Obsidian vault path for this plugin. Run this first before using other commands.
-allowed-tools: Bash, AskUserQuestion
+allowed-tools: Read, Write, Glob, Bash
 argument-hint: [vault-path]
 ---
 
@@ -11,40 +11,57 @@ Configure the path to your Obsidian vault.
 
 ## Instructions
 
-1. **Check if already configured**:
-   ```bash
-   cat ~/.claude/plugins/obsidian-claude.config 2>/dev/null
-   ```
+### Step 1: Check if already configured
 
-2. **If not configured or user wants to reconfigure**:
-   - Ask the user for their Obsidian vault path using AskUserQuestion
-   - The vault is the folder containing the `.obsidian` directory
+Use the **Read tool** to read `~/.claude/plugins/obsidian-claude.config`
 
-3. **If user provides path via $ARGUMENTS**, use that directly
+If file exists and has a VAULT_PATH, show the current path and ask if user wants to reconfigure.
 
-4. **Validate the path**:
-   - Check the directory exists
-   - Optionally check for `.obsidian` folder
+### Step 2: Get the vault path
 
-5. **Save the configuration**:
-   ```bash
-   mkdir -p ~/.claude/plugins
-   echo "VAULT_PATH=/path/to/vault" > ~/.claude/plugins/obsidian-claude.config
-   ```
+If user provided a path via `$ARGUMENTS`, use that directly.
 
-6. **Create the daily notes directory**:
-   ```bash
-   mkdir -p "$VAULT_PATH/daily"
-   ```
+Otherwise, ask the user for their Obsidian vault path. The vault is the folder containing the `.obsidian` directory.
 
-7. **Confirm to the user** that setup is complete and show them available commands:
-   - `/obsidian-claude-plugin:daily-note` - Add to daily notes
-   - `/obsidian-claude-plugin:add-note` - Create new notes
+### Step 3: Validate the path
+
+Use the **Glob tool** to check:
+1. The directory exists: `{path}/*`
+2. It's an Obsidian vault: `{path}/.obsidian/*`
+
+If `.obsidian` doesn't exist, warn the user but allow them to proceed.
+
+### Step 4: Save the configuration
+
+Use **Bash** to create the config directory:
+```bash
+mkdir -p ~/.claude/plugins
+```
+
+Then use the **Write tool** to create `~/.claude/plugins/obsidian-claude.config`:
+```
+VAULT_PATH={the-validated-path}
+```
+
+### Step 5: Create the daily notes directory
+
+Use **Bash**:
+```bash
+mkdir -p "{VAULT_PATH}/daily"
+```
+
+### Step 6: Confirm success
+
+Tell the user setup is complete and show available commands:
+- `/obsidian-claude-plugin:daily-note` - Add to daily notes
+- `/obsidian-claude-plugin:add-note` - Create new notes
 
 ## Example
 
-If user runs `/obsidian-claude-plugin:setup ~/Documents/MyVault`:
+User runs `/obsidian-claude-plugin:setup ~/Documents/MyVault`:
+
 1. Validate `~/Documents/MyVault` exists
-2. Save to config
-3. Create `~/Documents/MyVault/daily/` if needed
-4. Confirm success
+2. Check for `.obsidian` folder
+3. Save config with `VAULT_PATH=/Users/dan/Documents/MyVault`
+4. Create `~/Documents/MyVault/daily/` if needed
+5. Confirm success

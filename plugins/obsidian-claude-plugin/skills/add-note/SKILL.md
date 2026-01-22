@@ -11,98 +11,71 @@ argument-hint: [note content or topic]
 
 Create a new note in the user's Obsidian vault.
 
-## Configuration
+## Instructions
 
-The vault path is stored in: `~/.claude/plugins/obsidian-claude.config`
+### Step 1: Read the config file
 
-**IMPORTANT**: First check if config exists:
-```bash
-cat ~/.claude/plugins/obsidian-claude.config
-```
+Use the **Read tool** to read `~/.claude/plugins/obsidian-claude.config`
 
 If the file doesn't exist or VAULT_PATH is empty, tell the user:
 "Please run `/obsidian-claude-plugin:setup` first to configure your vault path."
-Then STOP - do not proceed without a valid config.
+Then STOP.
 
-Read the vault path:
+Extract the VAULT_PATH value from the file content.
+
+### Step 2: Get current date
+
+Use **Bash** only for this:
 ```bash
-VAULT_PATH=$(grep VAULT_PATH ~/.claude/plugins/obsidian-claude.config | cut -d= -f2)
+date +%Y-%m-%d
 ```
 
-## Workflow
+### Step 3: Discover Existing Tags
 
-1. **Read the vault path** from config
-2. **Scan existing tags** in the vault to find relevant ones
-3. **Determine an appropriate title** based on the content
-4. **Create the note** with proper frontmatter and tags
-5. **Always include** the `from-claude` tag
+Use the **Grep tool** to find existing tags in the vault:
+- Search pattern `^  - ` in `{VAULT_PATH}` for frontmatter tags
+- Search pattern `#[a-zA-Z][a-zA-Z0-9_-]*` for inline tags
 
-## Note Format
+### Step 4: Determine Title
 
-```markdown
----
-tags:
-  - from-claude
-  - [relevant-existing-tag]
-  - [another-relevant-tag]
-created: YYYY-MM-DD
----
-
-# Note Title
-
-[User's content here]
-```
-
-## Instructions
-
-When the user provides content via `$ARGUMENTS` or describes what they want to note:
-
-### Step 1: Get Configuration
-```bash
-VAULT_PATH=$(grep VAULT_PATH ~/.claude/plugins/obsidian-claude.config | cut -d= -f2)
-TODAY=$(date +%Y-%m-%d)
-```
-
-### Step 2: Discover Existing Tags
-Scan the vault for existing tags to reuse:
-```bash
-# Find tags in frontmatter
-grep -rh "^  - " "$VAULT_PATH" --include="*.md" | sort | uniq -c | sort -rn | head -20
-
-# Find inline tags
-grep -roh "#[a-zA-Z][a-zA-Z0-9_-]*" "$VAULT_PATH" --include="*.md" | sort | uniq -c | sort -rn | head -20
-```
-
-### Step 3: Determine Title
 Based on the content, create a descriptive title that:
 - Is concise (2-6 words typically)
 - Describes the main topic or purpose
 - Uses title case
 - Is suitable as a filename (no special characters except hyphens)
 
-### Step 4: Select Tags
+### Step 5: Select Tags
+
 - ALWAYS include `from-claude` as the first tag
-- Add 1-3 relevant tags from the existing tags discovered in Step 2
-- Only create a NEW tag if absolutely necessary and no existing tag fits
+- Add 1-3 relevant tags from existing tags discovered in Step 3
+- Only create a NEW tag if absolutely necessary
 - Prefer broader existing tags over creating specific new ones
 
-### Step 5: Create the Note
-Write the file to `$VAULT_PATH/[title-as-filename].md`:
+### Step 6: Check if file exists
+
+Use the **Glob tool** to check if `{VAULT_PATH}/{filename}.md` already exists.
+
+If it exists, append a number: `{filename}-2.md`, `{filename}-3.md`, etc.
+
+### Step 7: Create the Note
+
+Use the **Write tool** to create `{VAULT_PATH}/{filename}.md`:
 
 ```markdown
 ---
 tags:
   - from-claude
-  - [selected-tags]
-created: YYYY-MM-DD
+  - {selected-tags}
+created: {TODAY}
 ---
 
-# [Title]
+# {Title}
 
-[User's content, formatted appropriately]
+{User's content, formatted appropriately}
 ```
 
 ### Filename Rules
+
 - Convert title to lowercase
 - Replace spaces with hyphens
 - Remove special characters
@@ -116,32 +89,28 @@ created: YYYY-MM-DD
 - If the content includes code, use fenced code blocks with language hints
 - Keep the note focused on a single topic
 
-## Example Usage
+## Example
 
-User says: "Create a note about the new API authentication flow we discussed"
+User says: "Create a note about the new API authentication flow"
 
-1. Scan tags, find existing: `api`, `authentication`, `architecture`, `documentation`
+1. Scan tags, find existing: `api`, `authentication`, `architecture`
 2. Title: "API Authentication Flow"
 3. Tags: `from-claude`, `api`, `authentication`
 4. Filename: `api-authentication-flow.md`
 
-Result:
+Result written to `{VAULT_PATH}/api-authentication-flow.md`:
 ```markdown
 ---
 tags:
   - from-claude
   - api
   - authentication
-created: 2025-01-22
+created: 2026-01-22
 ---
 
 # API Authentication Flow
 
-[Content about the authentication flow as described by user]
+[Content about the authentication flow]
 ```
 
-## Important Notes
-
-- NEVER overwrite an existing note - check if filename exists first
-- If filename exists, append a number: `note-title-2.md`
-- Report back to the user with the note title and location
+Report back to the user with the note title and location.
