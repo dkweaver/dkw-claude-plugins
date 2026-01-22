@@ -2,7 +2,7 @@
 name: daily-note
 description: Add tasks or content to today's daily note in Obsidian. Use when the user wants to log something, add a task, or update their daily note.
 context: fork
-agent: vault-agent
+agent: obsidian-claude-plugin:vault-agent
 allowed-tools: Read, Write, Edit, Glob, Bash
 argument-hint: [content to add]
 ---

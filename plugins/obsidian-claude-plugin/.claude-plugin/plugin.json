@@ -1,7 +1,7 @@
 {
   "name": "obsidian-claude-plugin",
   "description": "Manage your Obsidian vault with daily notes, note creation, and Obsidian knowledge",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "author": {
     "name": "Daniel Weaver"
   },
