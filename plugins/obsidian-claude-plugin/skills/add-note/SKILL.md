@@ -1,8 +1,7 @@
 ---
 name: add-note
 description: Create a new note in the Obsidian vault with an appropriate title and tags. Use when the user wants to save information, ideas, or content as a new note.
-context: fork
-agent: obsidian-claude-plugin:vault-agent
+subagent: obsidian-claude-plugin:vault-agent
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 argument-hint: [note content or topic]
 ---
