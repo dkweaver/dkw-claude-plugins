@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "obsidian-claude-plugin",
-      "source": ".",
+      "source": "./plugins/obsidian-claude-plugin",
       "description": "Claude Code plugin for managing Obsidian vaults with daily notes and note creation",
       "version": "1.0.0",
       "author": {
