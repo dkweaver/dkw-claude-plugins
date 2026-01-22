@@ -1,0 +1,21 @@
+{
+  "name": "dkweaver-obsidian-plugins",
+  "owner": {
+    "name": "Daniel Weaver"
+  },
+  "metadata": {
+    "description": "Obsidian Claude plugin marketplace"
+  },
+  "plugins": [
+    {
+      "name": "obsidian-claude-plugin",
+      "source": ".",
+      "description": "Claude Code plugin for managing Obsidian vaults with daily notes and note creation",
+      "version": "1.0.0",
+      "author": {
+        "name": "Daniel Weaver"
+      },
+      "keywords": ["obsidian", "vault", "notes", "daily-notes"]
+    }
+  ]
+}
